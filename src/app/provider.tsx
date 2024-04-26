@@ -1,15 +1,16 @@
-import React, { PropsWithChildren } from "react";
-import { ChakraBaseProvider, extendBaseTheme, theme as chakraTheme } from "@chakra-ui/react";
+import React from "react";
 
-const { Button } = chakraTheme.components;
+import dynamic from "next/dynamic";
 
-const theme = extendBaseTheme({
-  components: {
-    Button,
-  },
-});
-const Provider: React.FC<PropsWithChildren> = ({ children }) => {
-  return <ChakraBaseProvider theme={theme}>{children}</ChakraBaseProvider>;
+const ChakraProvider = dynamic(() => import("./_provider/ChakraProvider"), { ssr: false });
+const BackgroundProvider = dynamic(() => import("./_provider/Background"), { ssr: false });
+
+const Provider = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <ChakraProvider>
+      <BackgroundProvider>{children}</BackgroundProvider>
+    </ChakraProvider>
+  );
 };
 
 export default Provider;
