@@ -1,15 +1,25 @@
 "use client";
 import React from "react";
-import { ChakraBaseProvider, extendBaseTheme, theme as chakraTheme } from "@chakra-ui/react";
+import {
+  ChakraBaseProvider,
+  extendBaseTheme,
+  theme as chakraTheme,
+  withDefaultColorScheme,
+  extendTheme,
+  withDefaultVariant,
+} from "@chakra-ui/react";
 
-const theme = extendBaseTheme({
-  components: {
-    ...chakraTheme.components,
+const customTheme = extendTheme(
+  {
+    colors: {
+      brand: chakraTheme.colors.purple,
+    },
   },
-});
+  withDefaultColorScheme({ colorScheme: "brand" })
+);
 
 const ChakraProvider = ({ children }: { children: React.ReactNode }) => {
-  return <ChakraBaseProvider theme={theme}>{children}</ChakraBaseProvider>;
+  return <ChakraBaseProvider theme={customTheme}>{children}</ChakraBaseProvider>;
 };
 
 export default ChakraProvider;

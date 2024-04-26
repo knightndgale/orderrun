@@ -53,7 +53,7 @@ export default function Home() {
                   variant="filled"
                 />
 
-                <Button type="submit" colorScheme="purple" width="full">
+                <Button type="submit" width="full">
                   Login
                 </Button>
               </VStack>
