@@ -9,11 +9,13 @@ import {
   FormLabel,
   FormErrorMessage,
   VStack,
-  Checkbox,
 } from "@chakra-ui/react";
-import { Field, Form, Formik, useField } from "formik";
+import { Field, Form, Formik, FormikHelpers, useField } from "formik";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import { UserSchema } from "./_validationSchema/user.schema";
+import { z } from "zod";
+import { login } from "./_directus/request";
+import { useRouter } from "next/navigation";
 
 const FormikInput = ({ label, ...props }: any) => {
   const [field, meta] = useField(props);
@@ -25,8 +27,13 @@ const FormikInput = ({ label, ...props }: any) => {
     </FormControl>
   );
 };
+type FormType = Pick<z.infer<typeof UserSchema>, "email" | "password">;
 
 export default function Home() {
+  const router = useRouter();
+  const onSubmitHandler = async (value: FormType) => {
+    login(value).then(() => router.push("/menu"));
+  };
   return (
     <Center h="100vh">
       <Container p={"5rem"}>
@@ -38,9 +45,7 @@ export default function Home() {
           validationSchema={toFormikValidationSchema(
             UserSchema.pick({ email: true, password: true })
           )}
-          onSubmit={(values) => {
-            console.log("🚀 ~ Home ~ values:", values);
-          }}>
+          onSubmit={onSubmitHandler}>
           {() => (
             <Form>
               <VStack spacing={4} align="flex-start">
@@ -52,7 +57,6 @@ export default function Home() {
                   type="password"
                   variant="filled"
                 />
-
                 <Button type="submit" width="full">
                   Login
                 </Button>
