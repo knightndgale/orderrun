@@ -9,6 +9,7 @@ import {
   FormLabel,
   FormErrorMessage,
   VStack,
+  useToast,
 } from "@chakra-ui/react";
 import { Field, Form, Formik, FormikHelpers, useField } from "formik";
 import { toFormikValidationSchema } from "zod-formik-adapter";
@@ -30,9 +31,21 @@ const FormikInput = ({ label, ...props }: any) => {
 type FormType = Pick<z.infer<typeof UserSchema>, "email" | "password">;
 
 export default function Home() {
+  const toast = useToast();
   const router = useRouter();
+  const TOAST_ID = "login_toast";
   const onSubmitHandler = async (value: FormType) => {
-    login(value).then(() => router.push("/menu"));
+    login(value)
+      .then(() => router.push("/menu"))
+      .catch((errors: any) => {
+        if (!toast.isActive(TOAST_ID))
+          toast({
+            id: TOAST_ID,
+            position: "top-right",
+            status: "error",
+            title: "Something went wrong!",
+          });
+      });
   };
   return (
     <Center h="100vh">

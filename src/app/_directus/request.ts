@@ -9,9 +9,8 @@ interface Authentication {
 export const login = async ({ email, password }: Authentication) => {
   try {
     await directus.login(email, password);
-  } catch (error) {
-    console.error("Login failed:", error);
-    return { success: false, error };
+  } catch (e: any) {
+    return { success: false, message: e?.errors?.[0]?.message };
   }
 };
 
