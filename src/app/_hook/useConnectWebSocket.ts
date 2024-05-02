@@ -13,22 +13,8 @@ const useConnectWebSocket = () => {
       setWebsocket(websocketDirectus);
     }
 
-    connect();
+    connect().then(() => {});
 
-    const onOpen = () => {
-      console.log({ event: "onopen" });
-      setsocketState((prev: any) => ({ ...prev, open: true }));
-    };
-    const onMessage = (message: any) => {
-      const { type, data } = message;
-      console.log({ event: "onmessage", data, type });
-      if (message.type === "ping") {
-        directus.sendMessage({
-          type: "pong",
-        });
-      }
-      setsocketState((prev: any) => ({ ...prev, message }));
-    };
     const onClose = () => {
       console.log({ event: "onclose" });
       setsocketState((prev: any) => ({ ...prev, open: false }));
@@ -38,8 +24,14 @@ const useConnectWebSocket = () => {
       setsocketState((prev: any) => ({ ...prev, error }));
     };
 
-    directus.onWebSocket("open", onOpen);
-    directus.onWebSocket("message", onMessage);
+    directus.onWebSocket("open", () => {
+      console.log({ event: "onopen" });
+      setsocketState((prev: any) => ({ ...prev, open: true }));
+    });
+    directus.onWebSocket("message", (message: any) => {
+      const { type, data } = message;
+      setsocketState((prev: any) => ({ ...prev, message }));
+    });
     directus.onWebSocket("close", onClose);
     directus.onWebSocket("error", onError);
   }, []);

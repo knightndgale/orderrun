@@ -1,3 +1,4 @@
+"use client";
 import {
   AuthenticationClient,
   DirectusClient,
@@ -25,7 +26,7 @@ export class DirectusWebsocketClient {
         // .with(staticToken("DJr6jJexpagd40Gu-HrtFsF-zYdNQCIF"))
         .with(realtime({ authMode: "public" }));
     }
-
+    console.log("HELLO");
     return DirectusWebsocketClient.instance;
   }
 }
