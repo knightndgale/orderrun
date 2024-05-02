@@ -11,7 +11,12 @@ import React, { useEffect, useMemo, useState } from "react";
 
 const page = () => {
   const [isConnected, setIsConnected] = useState<boolean>(false);
-  const [data, setData] = useState<[]>([]);
+  const [data, setData] = useState<any[]>([]);
+
+  const [menuItemSubs, setMenuItemSubs] = useState<{
+    subscription: AsyncGenerator<any>;
+    unsubscribe(): void;
+  }>();
   const client: DirectusClient<any> & WebSocketClient<any> & StaticTokenClient<any> =
     useMemo(() => {
       const socketURL = process.env.WEBSOCKET_URL || "localhost:8055";
@@ -23,44 +28,46 @@ const page = () => {
     }, []);
 
   async function subscribe() {
-    client.sendMessage({
-      type: "subscribe",
-      collection: "menu_item",
-      query: {
-        fields: ["*"],
-      },
-    });
+    const menuItemSub = await client.subscribe("menu_item");
+    setMenuItemSubs(menuItemSub);
   }
 
   useEffect(() => {
     client.onWebSocket("open", async () => {
       console.log("socket was connected");
-      client.sendMessage({
-        type: "subscribe",
-        collection: "menu_item",
-        query: {
-          fields: ["*"],
-        },
-      });
       setIsConnected(true);
     });
 
     client.onWebSocket("close", () => {
       console.log("socket was disconnected");
-      setData([]);
       setIsConnected(false);
     });
 
     client.onWebSocket("message", function (message) {
-      const { type, data } = message;
+      const { type, data, event } = message;
 
-      // if (type === "auth" && message.status === "ok") {
-      //   subscribe();
-      // }
-      if (!!data) {
+      if (event === "init") {
+        console.log("~init: TRIGGERED");
         setData(data);
       }
+      if (event === "create") {
+        console.log("~create: TRIGGERED");
+      }
+
+      if (event === "update") {
+        console.log("~update: TRIGGERED");
+      }
+      if (event === "delete") {
+        console.log("~delete: TRIGGERED");
+      }
+      if (type === "auth" && message.status === "ok") {
+        subscribe();
+      }
     });
+    return () => {
+      menuItemSubs?.unsubscribe();
+      client.disconnect();
+    };
   }, []);
 
   return (
