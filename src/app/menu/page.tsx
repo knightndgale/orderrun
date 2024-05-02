@@ -26,10 +26,10 @@ import {
 } from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons";
 import useConnectWebSocket from "../_hook/useConnectWebSocket";
-import { directus } from "../_directus";
 
 const Menu = () => {
   useConnectWebSocket();
+
   return (
     <Grid
       templateAreas={`"header header"

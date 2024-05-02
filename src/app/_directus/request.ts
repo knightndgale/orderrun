@@ -1,5 +1,6 @@
 "use server";
 import { directus } from ".";
+import { DirectusWebsocketClient } from "./webSocket";
 
 interface Authentication {
   email: string;
@@ -7,11 +8,7 @@ interface Authentication {
 }
 
 export const login = async ({ email, password }: Authentication) => {
-  try {
-    await directus.login(email, password);
-  } catch (e: any) {
-    return { success: false, message: e?.errors?.[0]?.message };
-  }
+  await directus.login(email, password);
 };
 
 export const logOut = async () => {
@@ -21,4 +18,10 @@ export const logOut = async () => {
     console.error("Check login failed:", error);
     return { success: false };
   }
+};
+
+export const getAPIToken = async () => {
+  const token = await directus.getToken();
+  if (!token) return;
+  new DirectusWebsocketClient(token);
 };

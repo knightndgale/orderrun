@@ -4,7 +4,7 @@ import { directus } from "../_directus/webSocket";
 
 const useConnectWebSocket = () => {
   const [webSocket, setWebsocket] = useState<WebSocketInterface>();
-  const [socketState, setsocketState] = useState();
+  const [socketState, setsocketState] = useState({});
 
   useEffect(() => {
     async function connect() {
@@ -13,30 +13,34 @@ const useConnectWebSocket = () => {
     }
 
     connect();
+    if (!webSocket) return;
+    const onOpen = () => {
+      setsocketState((prev) => ({ ...prev, open: true }));
+    };
+    const onMessage = (message: any) => {
+      setsocketState((prev) => ({ ...prev, message }));
+    };
+    const onClose = () => {
+      setsocketState((prev) => ({ ...prev, open: false }));
+    };
+    const onError = (error: any) => {
+      setsocketState((prev) => ({ ...prev, error }));
+    };
 
-    if (!!webSocket) {
-      webSocket.addEventListener("open", function () {
-        console.log({ event: "onopen" });
-      });
-
-      webSocket.addEventListener("message", function (message) {
-        const { type, data } = message;
-        console.log({ event: "onmessage", data, type });
-      });
-
-      webSocket.addEventListener("close", function () {
-        console.log({ event: "onclose" });
-      });
-
-      webSocket.addEventListener("error", function (error) {
-        console.log({ event: "onerror", error });
-      });
-    }
+    webSocket.addEventListener("open", onOpen);
+    webSocket.addEventListener("message", onMessage);
+    webSocket.addEventListener("close", onClose);
+    webSocket.addEventListener("error", onError);
 
     return () => {
-      setWebsocket(undefined);
+      webSocket.removeEventListener("open", onOpen);
+      webSocket.removeEventListener("message", onMessage);
+      webSocket.removeEventListener("close", onClose);
+      webSocket.removeEventListener("error", onError);
+      webSocket.close();
     };
   }, []);
+  return { webSocket, socketState };
 };
 
 export default useConnectWebSocket;
