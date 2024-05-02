@@ -9,7 +9,7 @@ import {
   staticToken,
 } from "@directus/sdk";
 
-type InstanceType = DirectusClient<any> & WebSocketClient<any> & StaticTokenClient<any>;
+type InstanceType = DirectusClient<any> & WebSocketClient<any>;
 export class DirectusWebsocketClient {
   private static instance: InstanceType;
   private static token: string;
@@ -22,8 +22,8 @@ export class DirectusWebsocketClient {
     const socketURL = process.env.WEBSOCKET_URL || "localhost:8055";
     if (!DirectusWebsocketClient.instance || rebuild) {
       DirectusWebsocketClient.instance = createDirectus(`ws://${socketURL}/websocket`)
-        .with(staticToken("DJr6jJexpagd40Gu-HrtFsF-zYdNQCIF"))
-        .with(realtime());
+        // .with(staticToken("DJr6jJexpagd40Gu-HrtFsF-zYdNQCIF"))
+        .with(realtime({ authMode: "public" }));
     }
 
     return DirectusWebsocketClient.instance;
