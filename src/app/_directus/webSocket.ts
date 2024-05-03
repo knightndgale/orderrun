@@ -23,10 +23,10 @@ export class DirectusWebsocketClient {
     const socketURL = process.env.WEBSOCKET_URL || "localhost:8055";
     if (!DirectusWebsocketClient.instance || rebuild) {
       DirectusWebsocketClient.instance = createDirectus(`ws://${socketURL}/websocket`)
-        // .with(staticToken("DJr6jJexpagd40Gu-HrtFsF-zYdNQCIF"))
+        .with(staticToken("DJr6jJexpagd40Gu-HrtFsF-zYdNQCIF"))
         .with(realtime({ authMode: "public" }));
     }
-    console.log("HELLO");
+
     return DirectusWebsocketClient.instance;
   }
 }

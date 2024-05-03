@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -25,10 +25,40 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons";
-import useConnectWebSocket from "../_hook/useConnectWebSocket";
+import useConnectWebSocket, { DirectusSubscribe } from "../_hook/useConnectWebSocket";
+import { directus } from "../_directus/webSocket";
 
 const Menu = () => {
-  useConnectWebSocket();
+  useConnectWebSocket(subscribe);
+  const [data, setData] = useState<any[]>([]);
+
+  async function subscribe() {
+    const menuItemSubs = await directus.subscribe("menu_item");
+    for await (const item of menuItemSubs.subscription) {
+      if (item.event === "init") {
+        setData(item.data);
+      }
+
+      if (item.event === "update") {
+        setData((prevState) => {
+          return [item.data[0], ...prevState.filter((value) => value.id !== item.data[0].id)];
+        });
+      }
+      if (item.event === "delete") {
+        setData((prevState) => {
+          return [...prevState.filter((value) => value.id !== item.data[0])];
+        });
+      }
+
+      if (item.event === "create") {
+        setData((prevState) => {
+          return [item.data[0], ...prevState.filter((value) => value.id !== item.data[0].id)];
+        });
+      }
+    }
+
+    return menuItemSubs;
+  }
 
   return (
     <Grid
@@ -63,265 +93,46 @@ const Menu = () => {
 
       <GridItem marginX={5} p="2" area={"main"}>
         <SimpleGrid minChildWidth="350px" overflow={"auto"} spacing={5} overflowX={"auto"}>
-          <Box maxW="400px">
-            <Card>
-              <CardBody>
-                <Image
-                  src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
-                  alt="Green double couch with wooden legs"
-                  borderRadius="lg"
-                />
-                <Stack mt="6" spacing="3">
-                  <Heading size="md">Living room Sofa</Heading>
-                  <Text>
-                    This sofa is perfect for modern tropical spaces, baroque inspired spaces, earthy
-                    toned spaces and for people who love a chic design with a sprinkle of vintage
-                    design.
-                  </Text>
-                  <Text color="blue.600" fontSize="2xl">
-                    ₱ 450
-                  </Text>
-                </Stack>
-              </CardBody>
-              <Divider />
-              <CardFooter>
-                <ButtonGroup spacing="2">
-                  <Button variant="solid" colorScheme="blue">
-                    Add to cart
-                  </Button>
-                </ButtonGroup>
-                <NumberInput ml={2} defaultValue={1} min={1} max={10}>
-                  <NumberInputField />
-                  <NumberInputStepper>
-                    <NumberIncrementStepper />
-                    <NumberDecrementStepper />
-                  </NumberInputStepper>
-                </NumberInput>
-              </CardFooter>
-            </Card>
-          </Box>
-          <Box maxW="400px">
-            <Card>
-              <CardBody>
-                <Image
-                  src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
-                  alt="Green double couch with wooden legs"
-                  borderRadius="lg"
-                />
-                <Stack mt="6" spacing="3">
-                  <Heading size="md">Living room Sofa</Heading>
-                  <Text>
-                    This sofa is perfect for modern tropical spaces, baroque inspired spaces, earthy
-                    toned spaces and for people who love a chic design with a sprinkle of vintage
-                    design.
-                  </Text>
-                  <Text color="blue.600" fontSize="2xl">
-                    ₱ 450
-                  </Text>
-                </Stack>
-              </CardBody>
-              <Divider />
-              <CardFooter>
-                <ButtonGroup spacing="2">
-                  <Button variant="solid" colorScheme="blue">
-                    Add to cart
-                  </Button>
-                </ButtonGroup>
-                <NumberInput ml={2} defaultValue={1} min={1} max={10}>
-                  <NumberInputField />
-                  <NumberInputStepper>
-                    <NumberIncrementStepper />
-                    <NumberDecrementStepper />
-                  </NumberInputStepper>
-                </NumberInput>
-              </CardFooter>
-            </Card>
-          </Box>
-          <Box maxW="400px">
-            <Card>
-              <CardBody>
-                <Image
-                  src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
-                  alt="Green double couch with wooden legs"
-                  borderRadius="lg"
-                />
-                <Stack mt="6" spacing="3">
-                  <Heading size="md">Living room Sofa</Heading>
-                  <Text>
-                    This sofa is perfect for modern tropical spaces, baroque inspired spaces, earthy
-                    toned spaces and for people who love a chic design with a sprinkle of vintage
-                    design.
-                  </Text>
-                  <Text color="blue.600" fontSize="2xl">
-                    ₱ 450
-                  </Text>
-                </Stack>
-              </CardBody>
-              <Divider />
-              <CardFooter>
-                <ButtonGroup spacing="2">
-                  <Button variant="solid" colorScheme="blue">
-                    Add to cart
-                  </Button>
-                </ButtonGroup>
-                <NumberInput ml={2} defaultValue={1} min={1} max={10}>
-                  <NumberInputField />
-                  <NumberInputStepper>
-                    <NumberIncrementStepper />
-                    <NumberDecrementStepper />
-                  </NumberInputStepper>
-                </NumberInput>
-              </CardFooter>
-            </Card>
-          </Box>
-          <Box maxW="400px">
-            <Card>
-              <CardBody>
-                <Image
-                  src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
-                  alt="Green double couch with wooden legs"
-                  borderRadius="lg"
-                />
-                <Stack mt="6" spacing="3">
-                  <Heading size="md">Living room Sofa</Heading>
-                  <Text>
-                    This sofa is perfect for modern tropical spaces, baroque inspired spaces, earthy
-                    toned spaces and for people who love a chic design with a sprinkle of vintage
-                    design.
-                  </Text>
-                  <Text color="blue.600" fontSize="2xl">
-                    ₱ 450
-                  </Text>
-                </Stack>
-              </CardBody>
-              <Divider />
-              <CardFooter>
-                <ButtonGroup spacing="2">
-                  <Button variant="solid" colorScheme="blue">
-                    Add to cart
-                  </Button>
-                </ButtonGroup>
-                <NumberInput ml={2} defaultValue={1} min={1} max={10}>
-                  <NumberInputField />
-                  <NumberInputStepper>
-                    <NumberIncrementStepper />
-                    <NumberDecrementStepper />
-                  </NumberInputStepper>
-                </NumberInput>
-              </CardFooter>
-            </Card>
-          </Box>
-          <Box maxW="400px">
-            <Card>
-              <CardBody>
-                <Image
-                  src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
-                  alt="Green double couch with wooden legs"
-                  borderRadius="lg"
-                />
-                <Stack mt="6" spacing="3">
-                  <Heading size="md">Living room Sofa</Heading>
-                  <Text>
-                    This sofa is perfect for modern tropical spaces, baroque inspired spaces, earthy
-                    toned spaces and for people who love a chic design with a sprinkle of vintage
-                    design.
-                  </Text>
-                  <Text color="blue.600" fontSize="2xl">
-                    ₱ 450
-                  </Text>
-                </Stack>
-              </CardBody>
-              <Divider />
-              <CardFooter>
-                <ButtonGroup spacing="2">
-                  <Button variant="solid" colorScheme="blue">
-                    Add to cart
-                  </Button>
-                </ButtonGroup>
-                <NumberInput ml={2} defaultValue={1} min={1} max={10}>
-                  <NumberInputField />
-                  <NumberInputStepper>
-                    <NumberIncrementStepper />
-                    <NumberDecrementStepper />
-                  </NumberInputStepper>
-                </NumberInput>
-              </CardFooter>
-            </Card>
-          </Box>
-          <Box maxW="400px">
-            <Card>
-              <CardBody>
-                <Image
-                  src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
-                  alt="Green double couch with wooden legs"
-                  borderRadius="lg"
-                />
-                <Stack mt="6" spacing="3">
-                  <Heading size="md">Living room Sofa</Heading>
-                  <Text>
-                    This sofa is perfect for modern tropical spaces, baroque inspired spaces, earthy
-                    toned spaces and for people who love a chic design with a sprinkle of vintage
-                    design.
-                  </Text>
-                  <Text color="blue.600" fontSize="2xl">
-                    ₱ 450
-                  </Text>
-                </Stack>
-              </CardBody>
-              <Divider />
-              <CardFooter>
-                <ButtonGroup spacing="2">
-                  <Button variant="solid" colorScheme="blue">
-                    Add to cart
-                  </Button>
-                </ButtonGroup>
-                <NumberInput ml={2} defaultValue={1} min={1} max={10}>
-                  <NumberInputField />
-                  <NumberInputStepper>
-                    <NumberIncrementStepper />
-                    <NumberDecrementStepper />
-                  </NumberInputStepper>
-                </NumberInput>
-              </CardFooter>
-            </Card>
-          </Box>
-          <Box maxW="400px">
-            <Card>
-              <CardBody>
-                <Image
-                  src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
-                  alt="Green double couch with wooden legs"
-                  borderRadius="lg"
-                />
-                <Stack mt="6" spacing="3">
-                  <Heading size="md">Living room Sofa</Heading>
-                  <Text>
-                    This sofa is perfect for modern tropical spaces, baroque inspired spaces, earthy
-                    toned spaces and for people who love a chic design with a sprinkle of vintage
-                    design.
-                  </Text>
-                  <Text color="blue.600" fontSize="2xl">
-                    ₱ 450
-                  </Text>
-                </Stack>
-              </CardBody>
-              <Divider />
-              <CardFooter>
-                <ButtonGroup spacing="2">
-                  <Button variant="solid" colorScheme="blue">
-                    Add to cart
-                  </Button>
-                </ButtonGroup>
-                <NumberInput ml={2} defaultValue={1} min={1} max={10}>
-                  <NumberInputField />
-                  <NumberInputStepper>
-                    <NumberIncrementStepper />
-                    <NumberDecrementStepper />
-                  </NumberInputStepper>
-                </NumberInput>
-              </CardFooter>
-            </Card>
-          </Box>
+          {data.map((item: any, index) => {
+            return (
+              <Box maxW="400px" key={item.id}>
+                <Card>
+                  <CardBody>
+                    <Image
+                      borderRadius="full"
+                      fallbackSrc="https://via.placeholder.com/250"
+                      boxSize="250px"
+                      objectFit="cover"
+                      src={`http://localhost:8055/assets/${item.image}`}
+                      alt="Green double couch with wooden legs"
+                    />
+                    <Stack mt="6" spacing="3">
+                      <Heading size="md">{item.title}</Heading>
+                      <Text>{item.description}</Text>
+                      <Text color="blue.600" fontSize="2xl">
+                        ₱ {item.price}
+                      </Text>
+                    </Stack>
+                  </CardBody>
+                  <Divider />
+                  <CardFooter>
+                    <ButtonGroup spacing="2">
+                      <Button variant="solid" colorScheme="blue">
+                        Add to cart
+                      </Button>
+                    </ButtonGroup>
+                    <NumberInput ml={2} defaultValue={1} min={1} max={10}>
+                      <NumberInputField />
+                      <NumberInputStepper>
+                        <NumberIncrementStepper />
+                        <NumberDecrementStepper />
+                      </NumberInputStepper>
+                    </NumberInput>
+                  </CardFooter>
+                </Card>
+              </Box>
+            );
+          })}
         </SimpleGrid>
       </GridItem>
     </Grid>

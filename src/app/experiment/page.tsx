@@ -29,41 +29,53 @@ const page = () => {
 
   async function subscribe() {
     const menuItemSub = await client.subscribe("menu_item");
+
     setMenuItemSubs(menuItemSub);
+    for await (const message of menuItemSub.subscription) {
+      if (message.event === "init") {
+        setData(message.data);
+      }
+      if (message.event === "update") {
+        console.log("🚀 ~ update ~ message:", message);
+        setData(message.data);
+      }
+      if (message.event === "delete") {
+        console.log("🚀 ~ delete ~ message:", message);
+        setData(message.data);
+      }
+      if (message.event === "create") {
+        console.log("🚀 ~ create ~ message:", message);
+        setData(message.data);
+      }
+    }
   }
 
   useEffect(() => {
     client.onWebSocket("open", async () => {
-      console.log("socket was connected");
+      subscribe();
       setIsConnected(true);
     });
 
     client.onWebSocket("close", () => {
       console.log("socket was disconnected");
+      menuItemSubs?.unsubscribe();
       setIsConnected(false);
+    });
+
+    client.onWebSocket("error", function (error) {
+      console.error({ event: "onerror", error });
     });
 
     client.onWebSocket("message", function (message) {
       const { type, data, event } = message;
-
-      if (event === "init") {
-        console.log("~init: TRIGGERED");
-        setData(data);
-      }
-      if (event === "create") {
-        console.log("~create: TRIGGERED");
-      }
-
-      if (event === "update") {
-        console.log("~update: TRIGGERED");
-      }
-      if (event === "delete") {
-        console.log("~delete: TRIGGERED");
-      }
+      // All subscription event will trigger message event
+      // you can get the event type, data, status etc... from here
+      // The caviat of using this is when you are using this subscription it'll will trigger it 4 times
       if (type === "auth" && message.status === "ok") {
-        subscribe();
+        // you can disconnect all subs and socket when user is authenticated
       }
     });
+
     return () => {
       menuItemSubs?.unsubscribe();
       client.disconnect();
