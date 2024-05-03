@@ -25,7 +25,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons";
-import useConnectWebSocket, { DirectusSubscribe } from "../_hook/useConnectWebSocket";
+import useConnectWebSocket from "../_hook/useConnectWebSocket";
 import { directus } from "../_directus/webSocket";
 
 const Menu = () => {
