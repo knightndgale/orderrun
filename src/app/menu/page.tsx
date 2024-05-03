@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Box,
   Button,
@@ -140,81 +140,3 @@ const Menu = () => {
 };
 
 export default Menu;
-
-// <CardBody>
-//   <Image
-//     src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
-//     alt="Green double couch with wooden legs"
-//     borderRadius="lg"
-//   />
-//   <Stack mt="6" spacing="3">
-//     <Heading size="md">Living room Sofa</Heading>
-//     <Text>
-//       This sofa is perfect for modern tropical spaces, baroque inspired spaces, earthy
-//       toned spaces and for people who love a chic design with a sprinkle of vintage
-//       design.
-//     </Text>
-//     <Text color="blue.600" fontSize="2xl">
-//       ₱ 450
-//     </Text>
-//   </Stack>
-// </CardBody>
-// <Divider />
-// <CardFooter>
-//   <ButtonGroup spacing="2">
-//     <Button variant="solid" colorScheme="blue">
-//       Add to cart
-//     </Button>
-//   </ButtonGroup>
-//   <NumberInput ml={2} defaultValue={1} min={1} max={10}>
-//     <NumberInputField />
-//     <NumberInputStepper>
-//       <NumberIncrementStepper />
-//       <NumberDecrementStepper />
-//     </NumberInputStepper>
-//   </NumberInput>
-// </CardFooter>
-// </Card>
-// <Card>
-// <CardBody>
-//   <Image
-//     src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
-//     alt="Green double couch with wooden legs"
-//     borderRadius="lg"
-//   />
-//   <Stack mt="6" spacing="3">
-//     <Heading size="md">Living room Sofa</Heading>
-//     <Text>
-//       This sofa is perfect for modern tropical spaces, baroque inspired spaces, earthy
-//       toned spaces and for people who love a chic design with a sprinkle of vintage
-//       design.
-//     </Text>
-//     <Text color="blue.600" fontSize="2xl">
-//       ₱ 450
-//     </Text>
-//   </Stack>
-// </CardBody>
-// <Divider />
-// <CardFooter>
-//   <ButtonGroup spacing="2">
-//     <Button variant="solid" colorScheme="blue">
-//       Add to cart
-//     </Button>
-//   </ButtonGroup>
-//   <NumberInput ml={2} defaultValue={1} min={1} max={10}>
-//     <NumberInputField />
-//     <NumberInputStepper>
-//       <NumberIncrementStepper />
-//       <NumberDecrementStepper />
-//     </NumberInputStepper>
-//   </NumberInput>
-// </CardFooter>
-// </Card>
-
-// <Button width="full" onClick={getMenuHandler}>
-//           Get Data
-//         </Button>
-//         <Button width="full" mt={5} onClick={getTokenHandler}>
-//           Get Token
-//         </Button>
-//         {JSON.stringify(token)}
