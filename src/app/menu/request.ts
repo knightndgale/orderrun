@@ -1,14 +1,19 @@
 "use server";
-import { readItems, staticToken } from "@directus/sdk";
+
+import { readItems } from "@directus/sdk";
 import { directus } from "../_directus";
 
-export const getToken = async () => {
+export const searchMenu = async (searchText: string) => {
   try {
-    const response = await directus.getToken();
-    console.log("🚀 ~ getMenus ~ response:", response);
+    const response = await directus.request(
+      readItems("menu_item" as any, {
+        search: searchText,
+      })
+    );
+
     return response;
-  } catch (e: any) {
-    console.log("🚀 ~ getMenus ~ e:", e?.errors[0].message);
-    // return { success: false, error: e };
+  } catch (error) {
+    console.error("Check login failed:", error);
+    return { success: false };
   }
 };

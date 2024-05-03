@@ -14,23 +14,27 @@ import {
   Image,
   Input,
   InputGroup,
-  InputLeftElement,
+  InputRightElement,
   NumberDecrementStepper,
   NumberIncrementStepper,
   NumberInput,
   NumberInputField,
   NumberInputStepper,
   SimpleGrid,
+  Spinner,
   Stack,
   Text,
 } from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons";
 import useConnectWebSocket from "../_hook/useConnectWebSocket";
 import { directus } from "../_directus/webSocket";
+import debounce from "lodash.debounce";
+import { searchMenu } from "./request";
 
 const Menu = () => {
   useConnectWebSocket(subscribe);
   const [data, setData] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   async function subscribe() {
     const menuItemSubs = await directus.subscribe("menu_item");
@@ -60,6 +64,12 @@ const Menu = () => {
     return menuItemSubs;
   }
 
+  const debounceSearch = debounce(async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const response = (await searchMenu(e.target.value)) as any[] | [];
+    setData(response);
+    setIsLoading(false);
+  }, 1000);
+
   return (
     <Grid
       templateAreas={`"header header"
@@ -84,10 +94,17 @@ const Menu = () => {
         alignItems={"center"}
         area={"header"}>
         <InputGroup w={"20rem"}>
-          <InputLeftElement pointerEvents="auto">
-            <SearchIcon color="gray.300" />
-          </InputLeftElement>
-          <Input type="text" placeholder="Search menu..." />
+          <InputRightElement pointerEvents="auto">
+            {isLoading ? <Spinner /> : <SearchIcon color="gray.300" />}
+          </InputRightElement>
+          <Input
+            onChange={(e) => {
+              setIsLoading(true);
+              debounceSearch(e);
+            }}
+            type="text"
+            placeholder="Search menu..."
+          />
         </InputGroup>
       </GridItem>
 
