@@ -35,17 +35,19 @@ export default function Home() {
   const router = useRouter();
   const TOAST_ID = "login_toast";
   const onSubmitHandler = async (value: FormType) => {
-    login(value)
-      .then(() => router.push("/menu"))
-      .catch((errors: any) => {
-        if (!toast.isActive(TOAST_ID))
-          toast({
-            id: TOAST_ID,
-            position: "top-right",
-            status: "error",
-            title: "Something went wrong!",
-          });
+    const response = await login(value);
+    if (!response?.success && !toast.isActive(TOAST_ID)) {
+      toast({
+        id: TOAST_ID,
+        isClosable: true,
+        position: "top-right",
+        status: "error",
+        title: response?.message,
       });
+      return;
+    }
+
+    router.push("/menu");
   };
   return (
     <Center h="100vh">

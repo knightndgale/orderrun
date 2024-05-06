@@ -8,15 +8,18 @@ interface Authentication {
 }
 
 export const login = async ({ email, password }: Authentication) => {
-  await directus.login(email, password);
+  try {
+    await directus.login(email, password);
+  } catch (error) {
+    return { success: false, message: JSON.parse(JSON.stringify(error)).errors[0]?.message };
+  }
 };
 
 export const logOut = async () => {
   try {
     await directus.logout();
   } catch (error) {
-    console.error("Check login failed:", error);
-    return { success: false };
+    return { success: false, message: JSON.parse(JSON.stringify(error)).errors[0]?.message };
   }
 };
 
