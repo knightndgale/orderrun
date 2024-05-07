@@ -36,7 +36,8 @@ export default function Home() {
   const TOAST_ID = "login_toast";
   const onSubmitHandler = async (value: FormType) => {
     const response = await login(value);
-    if (!response?.success && !toast.isActive(TOAST_ID)) {
+
+    if (response?.success === false && !toast.isActive(TOAST_ID)) {
       toast({
         id: TOAST_ID,
         isClosable: true,

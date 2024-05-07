@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import {
+  Badge,
   Box,
   Button,
   ButtonGroup,
@@ -11,6 +12,8 @@ import {
   Grid,
   GridItem,
   Heading,
+  Icon,
+  IconButton,
   Image,
   Input,
   InputGroup,
@@ -30,6 +33,7 @@ import useConnectWebSocket from "../_hook/useConnectWebSocket";
 import { directus } from "../_directus/webSocket";
 import debounce from "lodash.debounce";
 import { searchMenu } from "./request";
+import { FaShoppingCart } from "react-icons/fa";
 
 const Menu = () => {
   useConnectWebSocket(subscribe);
@@ -106,6 +110,29 @@ const Menu = () => {
             placeholder="Search menu..."
           />
         </InputGroup>
+        <Box position={"relative"}>
+          <Box
+            position={"absolute"}
+            right={-1}
+            top={-2}
+            zIndex={1}
+            backgroundColor={"yellow"}
+            w={5}
+            h={5}
+            display={"flex"}
+            justifyContent={"center"}
+            alignItems={"center"}
+            borderRadius={20}>
+            <Text fontSize={"small"}>1</Text>
+          </Box>
+          <IconButton
+            isRound={true}
+            variant="solid"
+            aria-label="Done"
+            fontSize="20px"
+            icon={<FaShoppingCart />}
+          />
+        </Box>
       </GridItem>
 
       <GridItem marginX={5} p="2" area={"main"}>
@@ -126,7 +153,7 @@ const Menu = () => {
                     <Stack mt="6" spacing="3">
                       <Heading size="md">{item.title}</Heading>
                       <Text>{item.description}</Text>
-                      <Text color="blue.600" fontSize="2xl">
+                      <Text color="purple.700" fontSize="2xl">
                         ₱ {item.price}
                       </Text>
                     </Stack>
@@ -134,9 +161,7 @@ const Menu = () => {
                   <Divider />
                   <CardFooter>
                     <ButtonGroup spacing="2">
-                      <Button variant="solid" colorScheme="blue">
-                        Add to cart
-                      </Button>
+                      <Button variant="solid">Add to cart</Button>
                     </ButtonGroup>
                     <NumberInput ml={2} defaultValue={1} min={1} max={10}>
                       <NumberInputField />

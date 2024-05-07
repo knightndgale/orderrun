@@ -2,11 +2,9 @@
 import React from "react";
 import {
   ChakraBaseProvider,
-  extendBaseTheme,
   theme as chakraTheme,
   withDefaultColorScheme,
   extendTheme,
-  withDefaultVariant,
 } from "@chakra-ui/react";
 
 const customTheme = extendTheme(
